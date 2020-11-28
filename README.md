@@ -37,17 +37,17 @@ python train.py test/grid.pkl q_learning
 ```
 
 It expects two transfer parameters: file path and learning method/algorithm. (Currently only Q-Learning is available.)
-The script will save the trained model as .outcome file which can be used for further computation.
+The script will save the trained model as .out file which can be used for further computation.
 
 ## Visualization
 
 To see the resulting utility function, which is an approximation of the ideal policy, the file **view.py** creates a visual representation.
 
 ```bash
-python view.py test/q_learning.outcome
+python view.py test/q_learning.out
 ```
 
-The .outcome file is used as transfer parameter.
+The .out file is used as transfer parameter.
 
 The following image shows an illustration of the interface:
 ![alt text](https://raw.githubusercontent.com/malex1106/rl_framework/main/images/view_interface.png "view.py visualization")
