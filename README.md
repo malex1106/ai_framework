@@ -13,5 +13,5 @@ For this installation, you have to download or clone the repository. Futhermore,
 % pip install -e .
 ```
 (it will install all necessary packages into the current python environment)
-* You are ready to run use the framework!
+* You are ready to use the framework!
 
