@@ -71,7 +71,7 @@ def main():
     )
 
     path_to_file, _ = os.path.split(args.path_instance)
-    path = os.path.join(path_to_file, 'q_learning.outcome')
+    path = os.path.join(path_to_file, 'q_learning.out')
 
     with open(path, 'wb') as f:
         pickle.dump(model, f)

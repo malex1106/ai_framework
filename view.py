@@ -16,17 +16,17 @@ def setup_subplots(subplot: plt.subplot, width: int, height: int, color: str, ti
 
 def check_color(best: int) -> str:
     if 99 <= best <= 100:
-        color = '#691903'
+        color = '#0a1924'
     elif 80 <= best < 99:
-        color = '#822208'
+        color = '#172f40'
     elif 60 <= best < 80:
-        color = '#b32904'
+        color = '#30546e'
     elif 40 <= best < 60:
-        color = '#c75536'
+        color = '#517d9c'
     elif 20 <= best < 40:
-        color = '#e39a76'
+        color = '#76a3c2'
     else:
-        color = '#f7bb9e'
+        color = '#9ac0db'
 
     return color
 
@@ -99,18 +99,18 @@ def main():
             color = check_color(best)
 
             ax.add_patch(matplotlib.patches.Rectangle((j, i), 1, 1, color=color))
-            ax.text(j + 0.5, i + 0.5,
-                    str(best),
-                    horizontalalignment='center', verticalalignment='center',
-                    color='white', size=9)
 
             dx, dy = show_policy(best_action)
 
             if i != terminal_node[0] or j != terminal_node[1]:
+                ax.text(j + 0.5, i + 0.5,
+                        str(best),
+                        horizontalalignment='center', verticalalignment='center',
+                        color='white', size=9)
                 ax2.add_patch(matplotlib.patches.Arrow(j + 0.5, i + 0.5, dx, dy, width=0.1, color='black'))
 
     ax.add_patch(matplotlib.patches.Rectangle((start_node[1], start_node[0]), 1, 1, color="white"))
-    ax.add_patch(matplotlib.patches.Rectangle((terminal_node[1], terminal_node[0]), 1, 1, color="white"))
+    ax.add_patch(matplotlib.patches.Rectangle((terminal_node[1], terminal_node[0]), 1, 1, color="#32a852"))
 
     setup_subplots(ax, width, height, 'white', 'Value Function')
     setup_subplots(ax2, width, height, '#1a1a1a', 'Utility Function')
