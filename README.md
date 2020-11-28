@@ -51,4 +51,8 @@ The .outcome file is used as transfer parameter.
 
 The following shows an illustration of the interface:
 
+Inline-style: 
+![alt text](https://raw.githubusercontent.com/malex1106/rl_framework/main/images/view_interface.png "view.py visualization")
+
+
 
