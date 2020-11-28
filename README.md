@@ -15,3 +15,13 @@ For this installation, you have to download or clone the repository. Futhermore,
 (it will install all necessary packages into the current python environment)
 * You are ready to use the framework!
 
+## Generate Environment
+
+A environment is simulated for training an agent. With the script **generate.py**, a simple grid with a start and end point (terminal nodes) can be created.
+The layout and file path are specified as transfer parameters.
+
+```bash
+python generate.py 5 6 test/grid.pkl
+```
+
+This command will create an 5x6 grid and save the environment as .pkl file.
