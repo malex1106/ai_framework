@@ -24,7 +24,7 @@ The layout and file path are specified as transfer parameters.
 python generate.py 5 6 test/grid.pkl
 ```
 
-This command will create an 5x6 grid and save the environment as .pkl file.
+This command will create a 5x6 grid and save the environment as .pkl file.
 
 ## Training
 
@@ -38,3 +38,17 @@ python train.py test/grid.pkl q_learning
 
 It expects two transfer parameters: file path and learning method/algorithm. (Currently only Q-Learning is available.)
 The script will save the trained model as .outcome file which can be used for further computation.
+
+## Visualization
+
+To see the resulting utility function, which is an approximation of the ideal policy, the file **view.py** creates a visual representation.
+
+```bash
+python view.py test/q_learning.outcome
+```
+
+The .outcome file is used as transfer parameter.
+
+The following shows an illustration of the interface:
+
+
