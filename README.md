@@ -25,3 +25,16 @@ python generate.py 5 6 test/grid.pkl
 ```
 
 This command will create an 5x6 grid and save the environment as .pkl file.
+
+## Training
+
+The file **train.py** is responsible for the preprocessing and management stuff between the learning algorithm and the previously created environment.
+You can interact with this script as follows:
+
+
+```bash
+python train.py test/grid.pkl q_learning
+```
+
+It expects two transfer parameters: file path and learning method/algorithm. (Currently only Q-Learning is available.)
+The script will save the trained model as .outcome file which can be used for further computation.
