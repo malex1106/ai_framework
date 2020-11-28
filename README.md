@@ -24,7 +24,7 @@ The layout and file path are specified as transfer parameters.
 python generate.py 5 6 test/grid.pkl
 ```
 
-This command will create a 5x6 grid and save the environment as .pkl file.
+This command will create a 5x6 grid and save the environment as *.pkl* file.
 
 ## Training
 
