@@ -47,7 +47,7 @@ class q_learning:
         This method will reset the environment to the start conditions and
         return the start state.
 
-        :return:
+        :return: list
         """
 
         self.current_state = self.env['start_node']
@@ -168,7 +168,7 @@ class q_learning:
 
 
 if __name__ == '__main__':
-    with open('../test/grid.pkl', 'rb') as f:
+    with open('../test_data/grid.pkl', 'rb') as f:
         data = pickle.load(f)
 
     q = q_learning(data)

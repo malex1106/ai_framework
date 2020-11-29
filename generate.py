@@ -18,9 +18,9 @@ def main():
         epilog='''
         example usage:
 
-        % python generate.py 5 6 test/grid.pkl
+        % python generate.py 5 6 test_data/grid.pkl
         this statement generates a 5x6 grid and writes it into
-        the pickle file 'test/grid.pkl'
+        the pickle file 'test_data/grid.pkl'
         ''',
         formatter_class=argparse.RawDescriptionHelpFormatter
     )

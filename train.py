@@ -17,9 +17,9 @@ def main():
         epilog='''
             example usage:
 
-            % python train.py test/grid.pkl q_learning
+            % python train.py test_data/grid.pkl q_learning
             this statement uses as training algorithm q learning and as 
-            environment 'test/grid.pkl'
+            environment 'test_data/grid.pkl'
             ''',
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
