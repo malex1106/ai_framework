@@ -1,3 +1,7 @@
+"""
+Author: Alexander Fichtinger
+"""
+
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
