@@ -2,10 +2,11 @@
 Author: Alexander Fichtinger
 """
 
+from generation_instance.environment_interface import Environment
 import numpy as np
 
 
-class Grid:
+class Grid(Environment):
     default_actions = np.array([
         'down',
         'up',
@@ -15,17 +16,16 @@ class Grid:
     ])
 
     def __init__(self, width: int, height: int):
-        self.width = width
-        self.height = height
+        super().__init__(width, height)
 
         self.gamma = 0.9
 
         # create general grid as a numpy array
-        self.grid = self.create_grid(width, height)
-        self.start_node, self.terminal_node = self.random_terminals(width, height)
+        self.grid = self.create_board(width, height)
+        self.start_node, self.terminal_node = self.set_states(width, height)
         self.rewards = self.define_rewards(self.terminal_node, width, height)
 
-    def create_grid(self, width: int, height: int) -> np.ndarray:
+    def create_board(self, width: int, height: int) -> np.ndarray:
         """ Generate and return a numpy array as grid
 
         :param width: int (row size)
@@ -38,7 +38,7 @@ class Grid:
             dtype=np.int
         )
 
-    def random_terminals(self, width: int, height: int) -> tuple:
+    def set_states(self, width: int, height: int) -> tuple:
         """ Compute start and terminal node
 
         This method will compute coordinate of the start and terminal node randomly. This objects will be returned.
