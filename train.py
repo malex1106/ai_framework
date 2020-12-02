@@ -52,12 +52,18 @@ def main():
     start_time = time.time()
 
     Q = None
-    if learning_method == 'q_learning':
+    if learning_method == 'q_learning' and \
+            data['learning'] == 'q_learning':
         ql_object = q_learning(data)
         Q = ql_object.train()
 
         for key in Q:
             Q[key] = round(Q[key], 2)
+    elif learning_method == 'logical_reasioning' and \
+            data['learning'] == 'logical_reasioning':
+        pass
+    else:
+        raise AssertionError('Wrong training type or file!')
 
     time_for_training = time.time() - start_time
 

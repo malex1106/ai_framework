@@ -8,11 +8,16 @@ import numpy as np
 
 class GameBoard(Environment):
     default_states = dict(
-        O=0,    # 0 for OK
-        T=1,    # 1 for Trap
-        M=2,    # 2 for Monster
-        G=3     # 3 for Gold
+        OK=0,
+        Trap=1,
+        Monster=2,
+        Goal=3
     )
+
+    default_senses = np.array([
+        'draft',    # when a trap is near
+        'stench'    # when the monster is near
+    ])
 
     def __init__(self, width: int, height: int):
         super().__init__(width, height)
@@ -21,12 +26,18 @@ class GameBoard(Environment):
         node_tuple = self.set_states(width, height)
 
         self.start_node = node_tuple[0]
-        self.start_node = node_tuple[0]
-        self.start_node = node_tuple[0]
-        self.start_node = node_tuple[0]
+        self.trap_node = node_tuple[1]
+        self.monster_node = node_tuple[2]
+        self.goal_node = node_tuple[3]
 
-        print(self.board)
-        print(node_tuple)
+        self.board[self.trap_node[0], self.trap_node[1]] = 1
+        self.board[self.monster_node[0], self.monster_node[1]] = 2
+        self.board[self.goal_node[0], self.goal_node[1]] = 3
+
+        senses = self.set_senses(width, height, self.trap_node, self.monster_node)
+
+        self.draft_nodes = senses[0]
+        self.stengh_nodes = senses[1]
 
     def create_board(self, width: int, height: int) -> np.ndarray:
         return np.zeros(
@@ -58,6 +69,26 @@ class GameBoard(Environment):
             trap_node = [rand_nodes_y[0], rand_nodes_x[0]]
 
         return start_node, trap_node, monster_node, gold_node
+
+    def check_nodes(self, node: list, width: int, height: int) -> list:
+        out_list = []
+
+        if node[0] > 0:
+            out_list.append([node[0] - 1, node[1]])
+        if node[0] < height - 1:
+            out_list.append([node[0] + 1, node[1]])
+        if node[1] > 0:
+            out_list.append([node[0], node[1] - 1])
+        if node[1] < width - 1:
+            out_list.append([node[0], node[1] + 1])
+
+        return out_list
+
+    def set_senses(self, width: int, height: int, trap_node: list, monster_node: list) -> tuple:
+        draft_nodes = self.check_nodes(trap_node, width, height)
+        stench_nodes = self.check_nodes(monster_node, width, height)
+
+        return draft_nodes, stench_nodes
 
 
 if __name__ == '__main__':
