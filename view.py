@@ -34,7 +34,8 @@ def main():
     with open(args.path_instance, 'rb') as f:
         data = pickle.load(f)
 
-    vis_q_learning.setup_interface(data)
+    if data['learning'] == 'q_learning':
+        vis_q_learning.setup_interface(data)
 
     plt.show()
 

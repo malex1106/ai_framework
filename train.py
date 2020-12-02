@@ -43,6 +43,8 @@ def main():
 
     learning_method = args.learning_method
 
+    path_to_file, _ = os.path.split(args.path_instance)
+
     with open(args.path_instance, 'rb') as f:
         data = pickle.load(f)
 
@@ -59,25 +61,27 @@ def main():
 
         for key in Q:
             Q[key] = round(Q[key], 2)
-    elif learning_method == 'logical_reasioning' and \
-            data['learning'] == 'logical_reasioning':
-        pass
+
+        model = dict(
+            learning='q_learning',
+            Q=Q,
+            width=data['width'],
+            height=data['height'],
+            actions=data['actions'],
+            start_node=data['start_node'],
+            terminal_node=data['terminal_node']
+        )
+
+        path = os.path.join(path_to_file, 'q_learning.out')
+
+    elif learning_method == 'logical_reasoning' and \
+            data['learning'] == 'logical_reasoning':
+        print(data)
+
     else:
         raise AssertionError('Wrong training type or file!')
 
     time_for_training = time.time() - start_time
-
-    model = dict(
-        Q=Q,
-        width=data['width'],
-        height=data['height'],
-        actions=data['actions'],
-        start_node=data['start_node'],
-        terminal_node=data['terminal_node']
-    )
-
-    path_to_file, _ = os.path.split(args.path_instance)
-    path = os.path.join(path_to_file, 'q_learning.out')
 
     with open(path, 'wb') as f:
         pickle.dump(model, f)

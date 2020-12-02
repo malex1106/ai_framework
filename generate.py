@@ -91,7 +91,7 @@ def main():
         default_states = board_object.default_states
         default_senses = board_object.default_senses
 
-        environment = dict(learning='logical_reasioning',
+        environment = dict(learning='logical_reasoning',
                            width=width,
                            height=height,
                            board=board,
