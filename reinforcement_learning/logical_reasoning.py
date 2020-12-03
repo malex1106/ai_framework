@@ -37,15 +37,12 @@ class logical_reasoning:
             if self.current_state[0] > 0:
                 t1 = symbols(f'{state}{self.current_state[0] - 1}_{self.current_state[1]}')
                 clause = Or(clause, t1)
-
             if self.current_state[0] < height - 1:
                 t2 = symbols(f'{state}{self.current_state[0] + 1}_{self.current_state[1]}')
                 clause = Or(clause, t2)
-
             if self.current_state[1] > 0:
                 t3 = symbols(f'{state}{self.current_state[0]}_{self.current_state[1] - 1}')
                 clause = Or(clause, t3)
-
             if self.current_state[1] < width - 1:
                 t4 = symbols(f'{state}{self.current_state[0]}_{self.current_state[1] + 1}')
                 clause = Or(clause, t4)
