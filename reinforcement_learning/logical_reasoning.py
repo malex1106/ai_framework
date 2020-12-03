@@ -33,19 +33,19 @@ class logical_reasoning:
         # if the senses have perceived anything from the current state
         else:
             clause = symbols('False')               # empty clause
-            t1 = t2 = t3 = t4 = symbols('False')    # set t1-t4 per default to False
+            li_1 = li_2 = li_3 = li_4 = symbols('False')    # set t1-t4 per default to False
 
             if self.current_state[0] > 0:
-                t1 = symbols(f'{state}{self.current_state[0] - 1}_{self.current_state[1]}')
+                li_1 = symbols(f'{state}{self.current_state[0] - 1}_{self.current_state[1]}')
             if self.current_state[0] < height - 1:
-                t2 = symbols(f'{state}{self.current_state[0] + 1}_{self.current_state[1]}')
+                li_2 = symbols(f'{state}{self.current_state[0] + 1}_{self.current_state[1]}')
             if self.current_state[1] > 0:
-                t3 = symbols(f'{state}{self.current_state[0]}_{self.current_state[1] - 1}')
+                li_3 = symbols(f'{state}{self.current_state[0]}_{self.current_state[1] - 1}')
             if self.current_state[1] < width - 1:
-                t4 = symbols(f'{state}{self.current_state[0]}_{self.current_state[1] + 1}')
+                li_4 = symbols(f'{state}{self.current_state[0]}_{self.current_state[1] + 1}')
 
             equal_sense = symbols(f'{sense}{self.current_state[0]}_{self.current_state[1]}')
-            clause = Or(clause, t1, t2, t3, t4)
+            clause = Or(clause, li_1, li_2, li_3, li_4)
             clause = Implies(clause, equal_sense)
 
             # if the knowledge base is None => set it to true
