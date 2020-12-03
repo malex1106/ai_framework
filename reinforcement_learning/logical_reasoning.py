@@ -33,7 +33,7 @@ class logical_reasoning:
         # if the senses have perceived anything from the current state
         else:
             clause = symbols('False')               # empty clause
-            li_1 = li_2 = li_3 = li_4 = symbols('False')    # set t1-t4 per default to False
+            li_1 = li_2 = li_3 = li_4 = symbols('False')    # set all literals per default to False
 
             if self.current_state[0] > 0:
                 li_1 = symbols(f'{state}{self.current_state[0] - 1}_{self.current_state[1]}')
