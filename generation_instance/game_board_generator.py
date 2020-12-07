@@ -37,7 +37,7 @@ class GameBoard(Environment):
         senses = self.set_senses(width, height, self.trap_node, self.monster_node)
 
         self.draft_nodes = senses[0]
-        self.stengh_nodes = senses[1]
+        self.stench_nodes = senses[1]
 
     def create_board(self, width: int, height: int) -> np.ndarray:
         return np.zeros(

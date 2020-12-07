@@ -29,43 +29,44 @@ def check_for_neighbours(state: list, width: int, height: int) -> list:
     return neighbours
 
 
-class LogicalReasioning:
+def check_assumptions(knowledge_base: dict, sense_assumption: list) -> dict:
+    new_assumptions = []
+    delete_assumptions = []
+    found_same_assumption = False
+
+    for counter, nested_list in enumerate(sense_assumption):
+        inner_selected_states = [i for i in nested_list]
+
+        for _ in range(counter + 1, len(sense_assumption)):
+            inner_next_states = [i for i in sense_assumption[_]]
+            for state in inner_next_states:
+                if state in inner_selected_states:
+                    if state not in knowledge_base['visited_nodes']:
+                        new_assumptions.append(state)
+                    if _ not in delete_assumptions:
+                        delete_assumptions.append(_)
+                    if counter not in delete_assumptions:
+                        delete_assumptions.append(counter)
+                    found_same_assumption = True
+
+    for ele in sorted(delete_assumptions, reverse=True):
+        del sense_assumption[ele]
+
+    if found_same_assumption:
+        knowledge_base['avoidance'] = knowledge_base['avoidance'] + new_assumptions
+        knowledge_base['avoidance'] = check_for_duplicates(knowledge_base['avoidance'])
+        return knowledge_base
+    else:
+        return knowledge_base
+
+
+class LogicalReasoning:
     def __init__(self, environment: dict):
         self.env = environment
         self.current_state = environment['start_node']
         self.draft_nodes = self.env['draft_nodes']
         self.stench_nodes = self.env['stench_nodes']
         self.queue = []
-
-    def check_assumptions(self, knowledge_base: dict, sense_assumption: list) -> dict:
-        new_assumptions = []
-        delete_assumptions = []
-        found_same_assumption = False
-
-        for counter, nested_list in enumerate(sense_assumption):
-            inner_selected_states = [i for i in nested_list]
-
-            for _ in range(counter + 1, len(sense_assumption)):
-                inner_next_states = [i for i in sense_assumption[_]]
-                for state in inner_next_states:
-                    if state in inner_selected_states:
-                        if state not in knowledge_base['visited_nodes']:
-                            new_assumptions.append(state)
-                        if _ not in delete_assumptions:
-                            delete_assumptions.append(_)
-                        if counter not in delete_assumptions:
-                            delete_assumptions.append(counter)
-                        found_same_assumption = True
-
-        for ele in sorted(delete_assumptions, reverse=True):
-            del sense_assumption[ele]
-
-        if found_same_assumption:
-            knowledge_base['avoidance'] = knowledge_base['avoidance'] + new_assumptions
-            knowledge_base['avoidance'] = check_for_duplicates(knowledge_base['avoidance'])
-            return knowledge_base
-        else:
-            return knowledge_base
 
     def step(self, next_state: list, KB: dict, width: int, height: int):
         # compute assumptions only once
@@ -94,8 +95,8 @@ class LogicalReasioning:
                         KB['avoidance'].remove(neighbour)
 
             # compare assumptions and calculate states which should be ignored
-            KB = self.check_assumptions(KB, KB['draft_assumptions'])
-            KB = self.check_assumptions(KB, KB['stench_assumptions'])
+            KB = check_assumptions(KB, KB['draft_assumptions'])
+            KB = check_assumptions(KB, KB['stench_assumptions'])
 
         contr_assumptions = True
 
@@ -167,5 +168,5 @@ if __name__ == '__main__':
 
     print(data['board'])
 
-    obj = LogicalReasioning(data)
+    obj = LogicalReasoning(data)
     obj.train()
