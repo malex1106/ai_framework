@@ -86,7 +86,11 @@ def main():
         board = board_object.board
         start_node = board_object.start_node
         draft_nodes = board_object.draft_nodes
-        stengh_nodes = board_object.stengh_nodes
+        stench_nodes = board_object.stench_nodes
+
+        trap_node = board_object.trap_node
+        monster_node = board_object.monster_node
+        goal_node = board_object.goal_node
 
         default_states = board_object.default_states
         default_senses = board_object.default_senses
@@ -97,7 +101,10 @@ def main():
                            board=board,
                            start_node=start_node,
                            draft_nodes=draft_nodes,
-                           stengh_nodes=stengh_nodes,
+                           stench_nodes=stench_nodes,
+                           trap_node=trap_node,
+                           monster_node=monster_node,
+                           goal_node=goal_node,
                            default_states=default_states,
                            default_senses=default_senses
                            )

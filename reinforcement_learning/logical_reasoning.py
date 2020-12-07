@@ -2,103 +2,163 @@
 Author: Alexander Fichtinger
 """
 
-from sympy import *
+from utils.logical_operations import LogicalOperator
 import dill as pickle
+import numpy as np
+import time
+from sympy import *
 
 
-def entails(KB, state: str, next_node: list) -> bool:
-    alpha = symbols(f'{state}{next_node[0]}_{next_node[1]}')
-    check = And(KB, alpha)
-    check = to_cnf(check)
-
-    if satisfiable(check):
-        return True
-    else:
-        return False
+def check_for_duplicates(input_list: list) -> list:
+    return [i for n, i in enumerate(input_list) if i not in input_list[:n]]
 
 
-class logical_reasoning:
+def check_for_neighbours(state: list, width: int, height: int) -> list:
+    row, column = state[0], state[1]
+    neighbours = []
+
+    if row > 0:
+        neighbours.append([row - 1, column])
+    if row < height - 1:
+        neighbours.append([row + 1, column])
+    if column > 0:
+        neighbours.append([row, column - 1])
+    if column < width - 1:
+        neighbours.append([row, column + 1])
+
+    return neighbours
+
+
+class LogicalReasioning:
     def __init__(self, environment: dict):
         self.env = environment
-        self.current_state = [0, 0]
+        self.current_state = environment['start_node']
+        self.draft_nodes = self.env['draft_nodes']
+        self.stench_nodes = self.env['stench_nodes']
+        self.queue = []
 
-    def create_clause(self, nodes: list, KB: object,
-                      width: int, height: int,
-                      state: str, sense: str) -> object:
+    def check_assumptions(self, knowledge_base: dict, sense_assumption: list) -> dict:
+        new_assumptions = []
+        delete_assumptions = []
+        found_same_assumption = False
 
-        # no knowledge base and the senses have not perceived anything
-        if KB is None and self.current_state not in nodes:
-            KB = False
+        for counter, nested_list in enumerate(sense_assumption):
+            inner_selected_states = [i for i in nested_list]
 
-        # if the senses have perceived anything from the current state
+            for _ in range(counter + 1, len(sense_assumption)):
+                inner_next_states = [i for i in sense_assumption[_]]
+                for state in inner_next_states:
+                    if state in inner_selected_states:
+                        if state not in knowledge_base['visited_nodes']:
+                            new_assumptions.append(state)
+                        if _ not in delete_assumptions:
+                            delete_assumptions.append(_)
+                        if counter not in delete_assumptions:
+                            delete_assumptions.append(counter)
+                        found_same_assumption = True
+
+        for ele in sorted(delete_assumptions, reverse=True):
+            del sense_assumption[ele]
+
+        if found_same_assumption:
+            knowledge_base['avoidance'] = knowledge_base['avoidance'] + new_assumptions
+            knowledge_base['avoidance'] = check_for_duplicates(knowledge_base['avoidance'])
+            return knowledge_base
         else:
-            clause = symbols('False')               # empty clause
-            li_1 = li_2 = li_3 = li_4 = symbols('False')    # set all literals per default to False
+            return knowledge_base
 
-            if self.current_state[0] > 0:
-                li_1 = symbols(f'{state}{self.current_state[0] - 1}_{self.current_state[1]}')
-            if self.current_state[0] < height - 1:
-                li_2 = symbols(f'{state}{self.current_state[0] + 1}_{self.current_state[1]}')
-            if self.current_state[1] > 0:
-                li_3 = symbols(f'{state}{self.current_state[0]}_{self.current_state[1] - 1}')
-            if self.current_state[1] < width - 1:
-                li_4 = symbols(f'{state}{self.current_state[0]}_{self.current_state[1] + 1}')
+    def step(self, next_state: list, KB: dict, width: int, height: int):
+        # compute assumptions only once
+        if self.current_state not in KB['visited_nodes']:
 
-            equal_sense = symbols(f'{sense}{self.current_state[0]}_{self.current_state[1]}')
-            clause = Or(clause, li_1, li_2, li_3, li_4)
-            clause = Implies(clause, equal_sense)
+            # update visited list
+            KB['visited_nodes'].append(self.current_state)
 
-            # if the knowledge base is None => set it to true
-            # otherwise the conjunction operator does not work
-            if KB is None:
-                KB = True
+            # some initializations
+            no_draft = True
+            no_stench = True
+            neighbours = check_for_neighbours(self.current_state, width, height)
 
-            KB = And(KB, clause)
+            # check senses
+            if self.current_state in self.draft_nodes:
+                KB['draft_assumptions'].append(neighbours.copy())
+                no_draft = False
+            if self.current_state in self.stench_nodes:
+                KB['stench_assumptions'].append(neighbours.copy())
+                no_stench = False
 
-        # if the knowledge base is not None and the senses have not perceived anything
-        # just return the previous knowledge base
-        # otherwise return the updated knowledge base
+            # if nothing was detected => check whether neighbors are wrongly ignored
+            if no_draft or no_stench:
+                for neighbour in neighbours:
+                    if neighbour in KB['avoidance']:
+                        KB['avoidance'].remove(neighbour)
+
+            # compare assumptions and calculate states which should be ignored
+            KB = self.check_assumptions(KB, KB['draft_assumptions'])
+            KB = self.check_assumptions(KB, KB['stench_assumptions'])
+
+        contr_assumptions = True
+
+        # check for possible traps
+        for inner_element in KB['draft_assumptions']:
+            if next_state in inner_element:
+                contr_assumptions = False
+
+        # check for possible monsters
+        for inner_element in KB['stench_assumptions']:
+            if next_state in inner_element:
+                contr_assumptions = False
+
+        # check for possible traps/monster on a higher computation level
+        if next_state in KB['avoidance']:
+            contr_assumptions = False
+
+        # set new state
+        if contr_assumptions or next_state in KB['visited_nodes']:
+            self.current_state = next_state
+        elif next_state in KB['visited_nodes']:
+            self.current_state = next_state
+        else:
+            self.queue.append(next_state)
+
+        KB['visited_nodes'] = check_for_duplicates(KB['visited_nodes'])
+
         return KB
-
-    def check_kb(self, width: int, height: int, KB: object, next_node: list, sense: str):
-        if sense == 'draft':
-            nodes = self.env['draft_nodes']
-            state = 'T'
-            sense_type = 'D'
-        elif sense == 'stengh':
-            nodes = self.env['stengh_nodes']
-            state = 'M'
-            sense_type = 'S'
-        else:
-            raise TypeError('Wrong sense type!')
-
-        # adopt and update current knowledge base
-        KB = self.create_clause(nodes, KB, width, height, state, sense_type)
-
-        # check for entailment and return an appropriate bool object
-        return entails(KB, state, next_node)
 
     def train(self):
         width = self.env['width']
         height = self.env['height']
 
-        KB = None
+        KB = dict(
+            visited_nodes=[],
+            draft_assumptions=[],
+            stench_assumptions=[],
+            avoidance=[]
+        )
 
-        check_draft = self.check_kb(width, height, KB, [1, 0], 'draft')
-        check_stengh = self.check_kb(width, height, KB, [1, 0], 'stengh')
+        print(f'Start state: {self.current_state}')
 
-        if check_draft or check_stengh:
-            print('Proof unsuccessfull! - 1')
-        else:
-            self.current_state = [1, 0]
+        while True:
+            neighbours = check_for_neighbours(self.current_state, width, height)
 
-        check_draft = self.check_kb(width, height, KB, [2, 0], 'draft')
-        check_stengh = self.check_kb(width, height, KB, [2, 0], 'stengh')
+            self.queue = self.queue + neighbours
+            self.queue = check_for_duplicates(self.queue)
 
-        if check_draft or check_stengh:
-            print('Proof unsuccessfull! - 2')
-        else:
-            self.current_state = [2, 0]
+            next_state = self.queue.pop(0)
+
+            KB = self.step(next_state, KB, width, height)
+
+            #print(f'Current state: {self.current_state}, Next state: {self.queue[0]}')
+
+            if self.current_state == self.env['goal_node']:
+                break
+            elif self.current_state == self.env['trap_node'] or \
+                    self.current_state == self.env['monster_node']:
+                raise Exception('PLAYER DIED!')
+
+        print(f'End state: {self.current_state}')
+        for data in KB.items():
+            print(data)
 
 
 if __name__ == '__main__':
@@ -107,5 +167,5 @@ if __name__ == '__main__':
 
     print(data['board'])
 
-    obj = logical_reasoning(data)
+    obj = LogicalReasioning(data)
     obj.train()

@@ -36,7 +36,7 @@ def e_greedy(rng, q, epsilon, actions, state) -> str:
         return used_action
 
 
-class q_learning:
+class QLearning:
     def __init__(self, environment: dict):
         self.env = environment
         self.current_state = self.reset()
@@ -171,5 +171,5 @@ if __name__ == '__main__':
     with open('../test_data/grid.pkl', 'rb') as f:
         data = pickle.load(f)
 
-    q = q_learning(data)
+    q = QLearning(data)
     q.train()

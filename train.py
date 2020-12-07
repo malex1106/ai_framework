@@ -2,7 +2,7 @@
 Author: Alexander Fichtinger
 """
 
-from reinforcement_learning.q_learning import q_learning
+from reinforcement_learning.q_learning import QLearning
 import argparse
 import os
 import dill as pickle
@@ -56,7 +56,7 @@ def main():
     Q = None
     if learning_method == 'q_learning' and \
             data['learning'] == 'q_learning':
-        ql_object = q_learning(data)
+        ql_object = QLearning(data)
         Q = ql_object.train()
 
         for key in Q:
