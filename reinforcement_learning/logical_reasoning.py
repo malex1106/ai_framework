@@ -34,11 +34,18 @@ def check_assumptions(knowledge_base: dict, sense_assumption: list) -> dict:
     delete_assumptions = []
     found_same_assumption = False
 
+    # due to the 3d likely structure, 3 loops are needed
+    # maybe this could be improved
+
+    # take every assumption in a row
     for counter, nested_list in enumerate(sense_assumption):
         inner_selected_states = [i for i in nested_list]
 
+        # compare it with all other assumptions
         for _ in range(counter + 1, len(sense_assumption)):
             inner_next_states = [i for i in sense_assumption[_]]
+
+            # check all states
             for state in inner_next_states:
                 if state in inner_selected_states:
                     if state not in knowledge_base['visited_nodes']:
@@ -55,9 +62,8 @@ def check_assumptions(knowledge_base: dict, sense_assumption: list) -> dict:
     if found_same_assumption:
         knowledge_base['avoidance'] = knowledge_base['avoidance'] + new_assumptions
         knowledge_base['avoidance'] = check_for_duplicates(knowledge_base['avoidance'])
-        return knowledge_base
-    else:
-        return knowledge_base
+
+    return knowledge_base
 
 
 class LogicalReasoning:
