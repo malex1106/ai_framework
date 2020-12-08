@@ -1,6 +1,6 @@
-# Python framework for Reinforcement Learning
+# Python framework for basic Artificial Intelligence algorithms
 
-This framework can be used to illustrate various principles in reinforcement learning. 
+This framework can be used to illustrate various ai-principles. 
 Due to the module-like design, you can easily introduce and test your own methods.
 
 ## Framework installation
