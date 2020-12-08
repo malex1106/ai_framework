@@ -1,4 +1,4 @@
-# Python framework for basic Artificial Intelligence algorithms
+# Python framework for Artificial Intelligence algorithms
 
 This framework can be used to illustrate various ai-principles. 
 Due to the module-like design, you can easily introduce and test your own methods.
