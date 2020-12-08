@@ -3,6 +3,7 @@ Author: Alexander Fichtinger
 """
 
 from reinforcement_learning.q_learning import QLearning
+from reinforcement_learning.logical_reasoning import LogicalReasoning
 import argparse
 import os
 import dill as pickle
@@ -76,7 +77,22 @@ def main():
 
     elif learning_method == 'logical_reasoning' and \
             data['learning'] == 'logical_reasoning':
-        print(data)
+        lr_object = LogicalReasoning(data)
+        KB, final_state = lr_object.train()
+
+        model = dict(
+            learning='logical_reasoning',
+            KB=KB,
+            board=data['board'],
+            width=data['width'],
+            height=data['height'],
+            final_state=final_state,
+            start_node=data['start_node'],
+            trap_node=data['trap_node'],
+            monster_node=data['monster_node']
+        )
+
+        path = os.path.join(path_to_file, 'logical_reasoning.out')
 
     else:
         raise AssertionError('Wrong training type or file!')

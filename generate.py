@@ -34,12 +34,12 @@ def main():
     parser.add_argument(
         'width',
         type=int,
-        help='width of the grid/board (>= 3)'
+        help='width of the grid/board (for grid: >=3, for board: >=5)'
     )
     parser.add_argument(
         'height',
         type=int,
-        help='width of the grid/board (>= 3)'
+        help='width of the grid/board (for grid: >=3, for board: >=5)'
     )
     parser.add_argument(
         'path_instance',
@@ -55,6 +55,9 @@ def main():
     args = parser.parse_args()
 
     if args.type == 'grid':
+        if args.width < 3 or args.height < 3:
+            raise ValueError('Width and height should be greater-equal 3!')
+
         grid_object = Grid(width=args.width, height=args.height)
 
         width = grid_object.width
@@ -78,6 +81,9 @@ def main():
                            rewards=rewards
                            )
     elif args.type == 'board':
+        if args.width < 5 or args.height < 5:
+            raise ValueError('Width and height should be greater-equal 5!')
+
         board_object = GameBoard(width=args.width, height=args.height)
 
         width = board_object.width

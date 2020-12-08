@@ -55,10 +55,10 @@ class GameBoard(Environment):
         monster_node = gold_node
 
         while monster_node == gold_node or monster_node == start_node:
-            rand_nodes_x = np.random.randint(0, width, size=1)
-            rand_nodes_y = np.random.randint(0, height, size=1)
+            rand_nodes_x = np.random.randint(1, width - 1, size=1)
+            rand_nodes_y = np.random.randint(1, height - 1, size=1)
 
-            monster_node = [rand_nodes_y[0], rand_nodes_x[0]]
+            monster_node = [start_node[0] + rand_nodes_y[0], start_node[1] + rand_nodes_x[0]]
 
         trap_node = monster_node
 

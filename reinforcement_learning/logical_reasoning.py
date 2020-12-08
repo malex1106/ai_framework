@@ -2,18 +2,28 @@
 Author: Alexander Fichtinger
 """
 
-from utils.logical_operations import LogicalOperator
 import dill as pickle
-import numpy as np
-import time
-from sympy import *
 
 
 def check_for_duplicates(input_list: list) -> list:
+    """ Check for duplicates.
+
+    :param input_list: list
+    :return: unique list
+    """
+
     return [i for n, i in enumerate(input_list) if i not in input_list[:n]]
 
 
 def check_for_neighbours(state: list, width: int, height: int) -> list:
+    """ Calculate all neighbours.
+
+    :param state: list
+    :param width: int
+    :param height: int
+    :return: list
+    """
+
     row, column = state[0], state[1]
     neighbours = []
 
@@ -30,6 +40,16 @@ def check_for_neighbours(state: list, width: int, height: int) -> list:
 
 
 def check_assumptions(knowledge_base: dict, sense_assumption: list) -> dict:
+    """ Compare all neighbours of visited states if a sense has struck.
+
+    If two states have the same possible trap/monster states as neighbours,
+    then the trap/monster is among the same neighbors (=> saved in 'avoidance')
+
+    :param knowledge_base: dict
+    :param sense_assumption: list
+    :return: dict
+    """
+
     new_assumptions = []
     delete_assumptions = []
     found_same_assumption = False
@@ -45,20 +65,30 @@ def check_assumptions(knowledge_base: dict, sense_assumption: list) -> dict:
         for _ in range(counter + 1, len(sense_assumption)):
             inner_next_states = [i for i in sense_assumption[_]]
 
-            # check all states
-            for state in inner_next_states:
-                if state in inner_selected_states:
-                    if state not in knowledge_base['visited_nodes']:
-                        new_assumptions.append(state)
-                    if _ not in delete_assumptions:
-                        delete_assumptions.append(_)
-                    if counter not in delete_assumptions:
-                        delete_assumptions.append(counter)
-                    found_same_assumption = True
+            # check for similar neighbours
+            find_similar = [x for x in inner_next_states + inner_selected_states
+                            if x in inner_next_states and
+                            x in inner_selected_states and
+                            x not in knowledge_base['visited_nodes']]
 
+            find_similar = check_for_duplicates(find_similar)
+
+            # save similiar assumptions one level higher ('avoidance')
+            if len(find_similar) > 0:
+                new_assumptions = new_assumptions + find_similar
+                found_same_assumption = True
+
+            # remove assumptions from hypothesis ('possible_traps/monsters')
+            if _ not in delete_assumptions:
+                delete_assumptions.append(_)
+            if counter not in delete_assumptions:
+                delete_assumptions.append(counter)
+
+    # update the possible states
     for ele in sorted(delete_assumptions, reverse=True):
         del sense_assumption[ele]
 
+    # if two states have the same neighbours
     if found_same_assumption:
         knowledge_base['avoidance'] = knowledge_base['avoidance'] + new_assumptions
         knowledge_base['avoidance'] = check_for_duplicates(knowledge_base['avoidance'])
@@ -69,12 +99,22 @@ def check_assumptions(knowledge_base: dict, sense_assumption: list) -> dict:
 class LogicalReasoning:
     def __init__(self, environment: dict):
         self.env = environment
+
         self.current_state = environment['start_node']
         self.draft_nodes = self.env['draft_nodes']
         self.stench_nodes = self.env['stench_nodes']
         self.queue = []
 
-    def step(self, next_state: list, KB: dict, width: int, height: int):
+    def step(self, next_state: list, KB: dict, width: int, height: int) -> dict:
+        """ Check the next state and update the current state if necessary.
+
+        :param next_state: list
+        :param KB: dict
+        :param width: int
+        :param height: int
+        :return: dict
+        """
+
         # compute assumptions only once
         if self.current_state not in KB['visited_nodes']:
 
@@ -88,10 +128,10 @@ class LogicalReasoning:
 
             # check senses
             if self.current_state in self.draft_nodes:
-                KB['draft_assumptions'].append(neighbours.copy())
+                KB['possible_traps'].append(neighbours.copy())
                 no_draft = False
             if self.current_state in self.stench_nodes:
-                KB['stench_assumptions'].append(neighbours.copy())
+                KB['possible_monsters'].append(neighbours.copy())
                 no_stench = False
 
             # if nothing was detected => check whether neighbors are wrongly ignored
@@ -99,20 +139,30 @@ class LogicalReasoning:
                 for neighbour in neighbours:
                     if neighbour in KB['avoidance']:
                         KB['avoidance'].remove(neighbour)
+            if no_draft:
+                for node_assum in KB['possible_traps']:
+                    for neighbour in neighbours:
+                        if neighbour in node_assum:
+                            node_assum.remove(neighbour)
+            if no_stench:
+                for node_assum in KB['possible_monsters']:
+                    for neighbour in neighbours:
+                        if neighbour in node_assum:
+                            node_assum.remove(neighbour)
 
             # compare assumptions and calculate states which should be ignored
-            KB = check_assumptions(KB, KB['draft_assumptions'])
-            KB = check_assumptions(KB, KB['stench_assumptions'])
+            KB = check_assumptions(KB, KB['possible_traps'])
+            KB = check_assumptions(KB, KB['possible_monsters'])
 
         contr_assumptions = True
 
         # check for possible traps
-        for inner_element in KB['draft_assumptions']:
+        for inner_element in KB['possible_traps']:
             if next_state in inner_element:
                 contr_assumptions = False
 
         # check for possible monsters
-        for inner_element in KB['stench_assumptions']:
+        for inner_element in KB['possible_monsters']:
             if next_state in inner_element:
                 contr_assumptions = False
 
@@ -132,18 +182,21 @@ class LogicalReasoning:
 
         return KB
 
-    def train(self):
+    def train(self) -> tuple:
+        """ Compute the next state, check for gold state and return the final results.
+
+        :return: tuple (knowledge_base: dict, gold state: list)
+        """
+
         width = self.env['width']
         height = self.env['height']
 
         KB = dict(
             visited_nodes=[],
-            draft_assumptions=[],
-            stench_assumptions=[],
+            possible_traps=[],
+            possible_monsters=[],
             avoidance=[]
         )
-
-        print(f'Start state: {self.current_state}')
 
         while True:
             neighbours = check_for_neighbours(self.current_state, width, height)
@@ -155,17 +208,17 @@ class LogicalReasoning:
 
             KB = self.step(next_state, KB, width, height)
 
-            #print(f'Current state: {self.current_state}, Next state: {self.queue[0]}')
-
             if self.current_state == self.env['goal_node']:
                 break
             elif self.current_state == self.env['trap_node'] or \
                     self.current_state == self.env['monster_node']:
                 raise Exception('PLAYER DIED!')
+        """
+        for value in KB.items():
+            print(value)
+        """
 
-        print(f'End state: {self.current_state}')
-        for data in KB.items():
-            print(data)
+        return KB, self.current_state
 
 
 if __name__ == '__main__':
