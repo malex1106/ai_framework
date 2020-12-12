@@ -4,9 +4,13 @@ Author: Alexander Fichtinger
 
 from reinforcement_learning.q_learning import QLearning
 from reinforcement_learning.logical_reasoning import LogicalReasoning
+from decision_trees.id3 import DecisionTree
+
+import numpy as np
 import argparse
 import os
 import dill as pickle
+import json
 import time
 
 
@@ -21,6 +25,14 @@ def main():
             % python train.py test_data/grid.pkl q_learning
             this statement uses as training algorithm q learning and as 
             environment 'test_data/grid.pkl'
+            
+            % python train.py test_data/board.pkl logical_reasoning
+            this statement uses logical reasoning and as 
+            environment 'test_data/board.pkl'
+            
+            % python train.py test_data/data.json id3
+            this statement uses as training algorithm id3 and as 
+            data 'test_data/data.json'
             ''',
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
@@ -34,9 +46,9 @@ def main():
         'learning_method',
         type=str,
         help='''
-        learning method which should be used
+        learning method which should be used,
         
-        possible methods: (q_learning)
+        possible methods: (q_learning, logical_reasoning, id3)
         '''
     )
 
@@ -46,17 +58,21 @@ def main():
 
     path_to_file, _ = os.path.split(args.path_instance)
 
-    with open(args.path_instance, 'rb') as f:
-        data = pickle.load(f)
+    if learning_method == 'q_learning' or learning_method == 'logical_reasoning':
+        with open(args.path_instance, 'rb') as f:
+            data = pickle.load(f)
+    elif learning_method == 'id3':
+        with open(args.path_instance, 'r') as f:
+            data = json.load(f)
 
     if len(data) == 0:
         raise ImportError('Imported data is empty!')
 
     start_time = time.time()
 
-    Q = None
     if learning_method == 'q_learning' and \
             data['learning'] == 'q_learning':
+        Q = None
         ql_object = QLearning(data)
         Q = ql_object.train()
 
@@ -93,7 +109,22 @@ def main():
         )
 
         path = os.path.join(path_to_file, 'logical_reasoning.out')
+    elif learning_method == 'id3' and \
+            data['learning'] == 'id3':
+        data_list = data['data']
+        data_array = np.asarray(data_list)
+        tree_object = DecisionTree()
+        root_node = tree_object.split_data(data_array)
 
+        print(f'###############################################################\n'
+              f'# The tree looks like: \n# {root_node}')
+
+        model = dict(learning='id3',
+                     data=data['data'],
+                     root_node=root_node
+                     )
+
+        path = os.path.join(path_to_file, 'id3.out')
     else:
         raise AssertionError('Wrong training type or file!')
 

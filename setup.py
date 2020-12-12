@@ -12,6 +12,6 @@ setup(
         'tqdm >= 4.52.0',
         'matplotlib >= 3.3.0',
         'dill >= 0.3.3',
-        'sympy >= 1.7'
+        'scipy >= 1.5.3'
     ],
 )

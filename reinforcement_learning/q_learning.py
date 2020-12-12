@@ -165,11 +165,3 @@ class QLearning:
                 state = next_state
 
         return Q
-
-
-if __name__ == '__main__':
-    with open('../test_data/grid.pkl', 'rb') as f:
-        data = pickle.load(f)
-
-    q = QLearning(data)
-    q.train()

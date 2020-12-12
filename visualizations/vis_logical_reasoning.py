@@ -49,8 +49,10 @@ def setup_interface(data: dict):
         for j in range(width):
             if [i, j] in KB['visited_nodes']:
                 ax.add_patch(matplotlib.patches.Rectangle((j, i), 1, 1, color="#c1d9c8"))
-            if [i, j] in KB['avoidance']:
-                ax.add_patch(matplotlib.patches.Rectangle((j, i), 1, 1, color="#e3e8e5"))
+            elif [i, j] in KB['avoidance']:
+                ax.add_patch(matplotlib.patches.Rectangle((j, i), 1, 1, color="#e86b6b"))
+            else:
+                ax.add_patch(matplotlib.patches.Rectangle((j, i), 1, 1, color="#ededed"))
 
     # set text in the visualized board
     ax.text(start_node[1] + 0.5, start_node[0] + 0.5,
@@ -93,5 +95,5 @@ def setup_interface(data: dict):
     ax2.add_patch(matplotlib.patches.Rectangle((gold_node[1], gold_node[0]), 1, 1, color="#2ab456"))
 
     # set suplot settings
-    setup_subplots(ax, width, height, 'white', 'Visualized Board from AI')
+    setup_subplots(ax, width, height, 'white', 'Logical Results of AI')
     setup_subplots(ax2, width, height, 'darkgray', 'Real Game Board')

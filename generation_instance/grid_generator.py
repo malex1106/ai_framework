@@ -91,8 +91,3 @@ class Grid(Environment):
         rewards[terminal_node[0], terminal_node[1], :] = 0
 
         return rewards
-
-
-if __name__ == '__main__':
-    grid = Grid(5, 4)
-    print(grid.rewards)

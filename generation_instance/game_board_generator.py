@@ -89,7 +89,3 @@ class GameBoard(Environment):
         stench_nodes = self.check_nodes(monster_node, width, height)
 
         return draft_nodes, stench_nodes
-
-
-if __name__ == '__main__':
-    obj = GameBoard(5, 5)
