@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='rl_framework',
+    name='ai_framework',
     version='0.1',
     url='https://github.com/malex1106/rl_framework',
     author='Alexander Fichtinger',
