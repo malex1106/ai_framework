@@ -19,7 +19,7 @@ For this installation, you have to download or clone the repository. Futhermore,
 
 With the script **generate.py**, a simple grid/board or sample data can be created. Depending on the learning method, the generated output file is stored as .pkl or .json file and also offers different structures. For further information, you can take a closer look in the appropriate help monitor.
 
-Sample commands:
+**Sample commands:**
 
 ```bash
 python generate.py grid test_data/grid.pkl -width 5 -height 5
