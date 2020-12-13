@@ -66,15 +66,15 @@ The *.out* file is used as transfer parameter.
 The following images show an illustration of the interface:
 
 ### Q-learning
-![alt text](https://raw.githubusercontent.com/malex1106/ai_framework/main/images/q_learning_view.png"view.py visualization - q_learning")
+![alt text](https://github.com/malex1106/ai_framework/blob/development/images/q_learning_view.png"view.py visualization - q_learning")
 
 
 ### Logical Reasoning
-![alt text](https://raw.githubusercontent.com/malex1106/ai_framework/main/images/logical_reasoning_view.png"view.py visualization - logical_reasoning")
+![alt text](https://github.com/malex1106/ai_framework/blob/development/images/logical_reasoning_view.png"view.py visualization - logical_reasoning")
 
 
 ### ID3 - Decision Tree
-![alt text](https://raw.githubusercontent.com/malex1106/ai_framework/main/images/view_interface.png "view.py visualization")
+![alt text](https://github.com/malex1106/ai_framework/blob/development/images/id3_view.png"view.py visualization")
 
 © Alexander Fichtinger, student, studies in Artificial Intelligence
 
