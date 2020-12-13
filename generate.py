@@ -69,7 +69,7 @@ def main():
         '-samples',
         type=int,
         required=False,
-        default=4,
+        default=6,
         help='sample size for the data generation'
     )
     parser.add_argument(

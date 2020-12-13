@@ -4,7 +4,7 @@ Author: Alexander Fichtinger
 
 from reinforcement_learning.q_learning import QLearning
 from reinforcement_learning.logical_reasoning import LogicalReasoning
-from decision_trees.id3 import DecisionTree
+from decision_trees.id3 import DecisionTree, TreeNode
 
 import numpy as np
 import argparse

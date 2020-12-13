@@ -5,8 +5,10 @@ Author: Alexander Fichtinger
 import matplotlib.pyplot as plt
 import dill as pickle
 import argparse
+
 from visualizations import vis_q_learning
 from visualizations import  vis_logical_reasoning
+from visualizations import vis_decision_tree
 
 
 def main():
@@ -43,6 +45,8 @@ def main():
         vis_q_learning.setup_interface(data)
     elif data['learning'] == 'logical_reasoning':
         vis_logical_reasoning.setup_interface(data)
+    elif data['learning'] == 'id3':
+        vis_decision_tree.setup_interface(data)
 
     plt.show()
 
