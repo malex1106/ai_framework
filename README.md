@@ -43,7 +43,7 @@ python generate.py data test_data/data.json -features 2 -samples 10
 ```
 
 This command will create a random categorized data with 2 features and 10 samples. (for id3)
-The visualisation currently only works with 2 features.
+The visualisation currently only works with 2 features. The id3 algoritm can create a decision tree only in the case of binary classified data.
 
 
 ## Training
