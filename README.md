@@ -21,7 +21,7 @@ With the script **generate.py**, a simple grid/board or sample data can be creat
 
 **Sample commands:**
 
-```bash
+*```bash
 python generate.py grid test_data/grid.pkl -width 5 -height 5
 ```
 
