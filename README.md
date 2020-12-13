@@ -48,7 +48,7 @@ You can interact with this script as follows:
 
 
 ```bash
-python train.py test/grid.pkl q_learning
+python train.py test_data/grid.pkl q_learning
 ```
 
 It expects two transfer parameters: file path and learning method/algorithm. (q_learning, logical_reasoning, id3)
@@ -59,7 +59,7 @@ The script will save the trained model as *.out* file which can be used for furt
 To see the resulting utility function, which is an approximation of the ideal policy, the file **view.py** creates a visual representation.
 
 ```bash
-python view.py test/q_learning.out
+python view.py test_data/q_learning.out
 ```
 
 The *.out* file is used as transfer parameter.
