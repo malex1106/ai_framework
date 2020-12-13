@@ -15,20 +15,35 @@ For this installation, you have to download or clone the repository. Futhermore,
 (it will install all necessary packages into the current python environment)
 * You are ready to use the framework!
 
-## Generate Environment
+## Generate Environment/Sample data
 
-A environment is simulated for training an agent. With the script **generate.py**, a simple grid with a start and end point (terminal nodes) can be created.
-The layout and file path are specified as transfer parameters.
+With the script **generate.py**, a simple grid/board or sample data can be created. Depending on the learning method, the generated output file is stored as .pkl or .json file and also offers different structures. For further information, you can take a closer look in the appropriate help monitor.
+
+Sample commands:
 
 ```bash
-python generate.py 5 6 test/grid.pkl
+python generate.py grid test_data/grid.pkl -width 5 -height 5
 ```
 
-This command will create a 5x6 grid and save the environment as *.pkl* file.
+This command will create a 5x5 grid and save the environment as *.pkl* file. (for q_learning)
+
+```bash
+python generate.py board test_data/board.pkl -width 5 -height 5
+```
+
+This command will create a 5x5 board and save the environment as *.pkl* file. (for logical_reasoning)
+
+```bash
+python generate.py data test_data/data.json -features 2 -samples 10
+```
+
+This command will create a random categorized data with 2 features and 10 samples. (for id3)
+The visualisation currently only works with 2 features.
+
 
 ## Training
 
-The file **train.py** is responsible for the preprocessing and management stuff between the learning algorithm and the previously created environment.
+The file **train.py** is responsible for the preprocessing and management stuff between the learning algorithm and the previously created environment/data.
 You can interact with this script as follows:
 
 
@@ -36,7 +51,7 @@ You can interact with this script as follows:
 python train.py test/grid.pkl q_learning
 ```
 
-It expects two transfer parameters: file path and learning method/algorithm. (Currently only Q-Learning is available.)
+It expects two transfer parameters: file path and learning method/algorithm. (q_learning, logical_reasoning, id3)
 The script will save the trained model as *.out* file which can be used for further computation.
 
 ## Visualization
@@ -48,9 +63,18 @@ python view.py test/q_learning.out
 ```
 
 The *.out* file is used as transfer parameter.
+The following images show an illustration of the interface:
 
-The following image shows an illustration of the interface:
-![alt text](https://raw.githubusercontent.com/malex1106/rl_framework/main/images/view_interface.png "view.py visualization")
+### Q-learning
+![alt text](https://raw.githubusercontent.com/malex1106/ai_framework/main/images/q_learning_view.png"view.py visualization - q_learning")
+
+
+### Logical Reasoning
+![alt text](https://raw.githubusercontent.com/malex1106/ai_framework/main/images/logical_reasoning_view.png"view.py visualization - logical_reasoning")
+
+
+### ID3 - Decision Tree
+![alt text](https://raw.githubusercontent.com/malex1106/ai_framework/main/images/view_interface.png "view.py visualization")
 
 © Alexander Fichtinger, student, studies in Artificial Intelligence
 
