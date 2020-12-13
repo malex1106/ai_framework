@@ -21,18 +21,22 @@ With the script **generate.py**, a simple grid/board or sample data can be creat
 
 **Sample commands:**
 
-* 
+* Grid
 ```bash
 python generate.py grid test_data/grid.pkl -width 5 -height 5
 ```
 
 This command will create a 5x5 grid and save the environment as *.pkl* file. (for q_learning)
 
+* Board
+
 ```bash
 python generate.py board test_data/board.pkl -width 5 -height 5
 ```
 
 This command will create a 5x5 board and save the environment as *.pkl* file. (for logical_reasoning)
+
+* Random data
 
 ```bash
 python generate.py data test_data/data.json -features 2 -samples 10
